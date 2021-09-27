@@ -6,39 +6,79 @@
 #include <ncurses.h> // g++ -l ncurses
 using namespace std;
 
-#define UP_KEY 38
-#define LEFT_KEY 37
-#define RIGHT_KEY 39
-#define DOWN_KEY 40
-#define ENTER_KEY 13
-void initScreen();
-void logic();
-void drawScreen();
-void runGame();
-void getInput();
+//variable decleration
+    //Directions
+    bool LEFT;
+    bool RIGHT;
+    bool UP;
+    bool DOWN;
+    //Screen Size
+    int screenY;
+    int screenX;
+    //Board Var
+    int board[][];
+
+//function decleration
+    void initScreen();
+    void initBoard();
+    void logic();
+    void drawScreen();
+    void runGame();
+    void getInput();
 
 int main(){
     initScreen();
-    getInput();   
+    while (true){
+        getinput();
+    }
     return 0;
 }
 
 void initScreen(){
     initscr();
     noecho();
-    raw();
-
+    cbreak();
+    keypad(stdscr, true); // Enables keypad input
+    refresh();
+    getmaxyx(stdscr, screenY, screenX);
+    Window *snakeWin = newwin(screenY/2, screenX/2, screenY/4, screenX/4); // Snake wil be drawn in this window
+    box(snakeWin, 0, 0);
+    wgetch(snakeWin);
+}
+void initBoard(){
+    
 }
 void getInput(){
-    char c = _getch();
-    bool running = true;
-    while (running){
+    if (kbhit()){
+        int c = getch();
         switch (c){
-            case 'w': printw("west"); break;
-            case UP_KEY: printw("west"); break;
-            case 'q': running = false; break;
+            case KEY_UP:
+            UP = true;
+            break;
+            case KEY_LEFT:
+            LEFT = true;
+            break;
+            case KEY_RIGHT:
+            RIGHT = true;
+            break;
+            case KEY_DOWN:
+            DOWN = true;
+            break;
+            case 'w':
+            UP = true;
+            break;
+            case 'a':
+            LEFT = true;
+            break;
+            case 'd':
+            RIGHT = true;
+            break;
+            case 's':
+            DOWN = true;
+            break;
+            case 'q':
+            endwin();
+            exit(1);
         }
     }
-    endwin();
-
 }

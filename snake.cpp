@@ -19,29 +19,31 @@ int screenX;
 
 //function decleration
 void initScreen();
-void initBoard(int board[][]);
+void initBoard(int** board);
 void logic();
-void drawScreen(int board[][]);
+void drawScreen(int** board);
 void runGame();
 void getInput();
 
 int main(){
-    int board[][];
-    initBoard(board);
     initScreen();
+    int**board {new int*[screenX]};
+    initBoard(board);
     drawScreen(board);
+    endwin();
     getInput();
-    //while (true){
-    //    getInput();
-    //}
+    while (true){
+        getInput();
+    }
     return 0;
 }
 
 void initScreen(){
-    if (stdscr != NULL){ // If called on resize
+    /*if (stdscr != NULL){ // If called on resize
         erase();
         endwin();
     }
+    */
     initscr();
     noecho();
     cbreak();
@@ -49,25 +51,28 @@ void initScreen(){
     refresh();
     getmaxyx(stdscr, screenY, screenX);
     //WINDOW *snakeWin = stdscr;//newwin(screenY/2, screenX/2, screenY/4, screenX/4); // Snake wil be drawn in this window
-    box(stdscr, 0, 0);
+    //box(stdscr, 0, 0);
     wgetch(stdscr);
 }
-void initBoard(int board[][]){
+void initBoard(int **board){
+    for (int i = 0; i < screenX; i++){
+        board[i] = new int[screenY];
+    }
     for (int i = 0; i < screenX; i++){
         for (int j = 0; j < screenY; j++){
             if (i == 0 || j == 0){
-                board[i][j] = -1;
+                board[i][j] = 1;
             }
             else board[i][j] = 0;
         }
     }
 }
-void drawScreen(int board[][]){
+void drawScreen(int **board){
     for (int i = 0; i < screenX; i++){
         for (int j = 0; j < screenY; j++){
-            printw("%d", (board[i][j]));
+            move(screenX, screenY);
+            printw("%d",board[screenX][screenY]);
         }
-        printw("\n");
     }
 
 }

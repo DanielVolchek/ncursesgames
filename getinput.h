@@ -1,37 +1,18 @@
 #include <ncurses.h>
-void getInput(bool *UP, bool *DOWN, bool *LEFT, bool *RIGHT, bool *QUIT, bool *RESIZE){
+#define QUIT_CASE 1
+//KEY_UP
+//KEY_DOWN
+//KEY_LEFT
+//KEY_RIGHT
+//KEY_RESIZE
+int getInput(){
     int c = getch();
     switch (c){
-        case KEY_RESIZE: // Catch resize
-        *RESIZE = true;
-        break;
-        case KEY_UP:
-        *UP = true;
-        break;
-        case KEY_LEFT:
-        *LEFT = true;
-        break;
-        case KEY_RIGHT:
-        *RIGHT = true;
-        break;
-        case KEY_DOWN:
-        *DOWN = true;
-        break;
-        case 'w':
-        *UP = true;
-        break;
-        case 'a':
-        *LEFT = true;
-        break;
-        case 'd':
-        *RIGHT = true;
-        break;
-        case 's':
-        *DOWN = true;
-        break;
-        case 'q':
-        *QUIT = true;
+        case 'q': // Catch resize
+        return QUIT_CASE;
+        case ERR:
+        return -1;
         default:
-        break;
-    }
+        return c;
+        }
 }

@@ -4,14 +4,19 @@
 //Code: Snake
 #include <iostream>
 #include <ncurses.h> // g++ -l ncurses
+#include "getinput.h"
 using namespace std;
 
 //variable decleration
 //Directions
+
 bool LEFT;
 bool RIGHT;
 bool UP;
 bool DOWN;
+bool QUIT;
+bool RESIZE;
+
 //Screen Size
 int screenY;
 int screenX;
@@ -20,21 +25,27 @@ int screenX;
 //function decleration
 void initScreen();
 void initBoard(int** board);
-void logic();
+void doLogic();
 void drawScreen(int** board);
 void runGame();
-void getInput();
 
 int main(){
     initScreen();
     int**board {new int*[screenX]};
     initBoard(board);
     drawScreen(board);
-    endwin();
-    getInput();
-    while (true){
-        getInput();
+    while (!QUIT){
+        getInput(&UP, &DOWN, &LEFT, &RIGHT, &QUIT, &RESIZE);
+        if (RESIZE){
+            endwin();
+            RESIZE = false;
+            initScreen();
+
+        }
+        //doLogic();
+        drawScreen(board);
     }
+    endwin();
     return 0;
 }
 
@@ -51,7 +62,7 @@ void initScreen(){
     refresh();
     getmaxyx(stdscr, screenY, screenX);
     //WINDOW *snakeWin = stdscr;//newwin(screenY/2, screenX/2, screenY/4, screenX/4); // Snake wil be drawn in this window
-    //box(stdscr, 0, 0);
+    box(stdscr, 0, 0);
     wgetch(stdscr);
 }
 void initBoard(int **board){
@@ -60,7 +71,7 @@ void initBoard(int **board){
     }
     for (int i = 0; i < screenX; i++){
         for (int j = 0; j < screenY; j++){
-            if (i == 0 || j == 0){
+            if (i == 0 || j == 0 || i == screenX-1 || j == screenX-1){
                 board[i][j] = 1;
             }
             else board[i][j] = 0;
@@ -70,48 +81,10 @@ void initBoard(int **board){
 void drawScreen(int **board){
     for (int i = 0; i < screenX; i++){
         for (int j = 0; j < screenY; j++){
-            move(screenX, screenY);
+            move(j, i);
             printw("%d",board[screenX][screenY]);
         }
     }
 
 }
-void getInput(){
-        {
-        int c = getch();
-        switch (c){
-            case KEY_RESIZE: // Catch resize
-            initScreen();
-            break;
-            case KEY_UP:
-            UP = true;
-            break;
-            case KEY_LEFT:
-            LEFT = true;
-            break;
-            case KEY_RIGHT:
-            RIGHT = true;
-            break;
-            case KEY_DOWN:
-            DOWN = true;
-            break;
-            case 'w':
-            UP = true;
-            break;
-            case 'a':
-            LEFT = true;
-            break;
-            case 'd':
-            RIGHT = true;
-            break;
-            case 's':
-            DOWN = true;
-            break;
-            case 'q':
-            endwin();
-            exit(1);
-            default:
-            break;
-        }
-    }
-}
+

@@ -9,8 +9,14 @@
 #include <time.h> // RAND SEED
 #include <fstream> //Err checking
 #include <string> // File Checking
+#include <unistd.h>// Sleep
 #include "getinput.h" // input header
 using namespace std;
+
+// Vector of <int,int> snakecoords
+// starts with two, snake head and snake tail
+// increment each element every turn, then draws from them
+// 
 
 //Defines
 #define EMPTY 0
@@ -20,7 +26,7 @@ using namespace std;
 //Err checking
 ofstream fout;
 //snake length
-int snakeLen;
+int snakeLen = 1;
 //Screen Size
 int screenY;
 int screenX;
@@ -31,11 +37,12 @@ int snakeTurnCoord[2] = {-1, -1};
 int appleCoord[2] = {-1,-1};
 //Turn Vector and last turned
 vector<tuple<int,int,int>> turnCoords;
-int lastTurn; // Defined with KEY_UP KEY_DOWN etc...
+int lastMove; // Defined with KEY_UP KEY_DOWN etc...
 //QUIT bool
 bool QUIT;
 //Apple eaten bool
 bool ateApple;
+bool snakeHitTurn;
 //function decleration
 void initScreen();
 void initBoard(int** board); 
@@ -55,25 +62,31 @@ int main(){
     int**board {new int*[screenX]}; // Pointer to pointer array
     initBoard(board);
     ateApple = true; // Set for first pass
-    lastTurn = -1; // Set for first pass
+    lastMove = 1; // Set for first pass
     fout << "Draw Screen" << endl;
     drawScreen(board);
     QUIT = false;
+    int c = getInput();
+    lastMove = c;
+    nodelay(stdscr, true);
     while (!QUIT){
-        int c = getInput();
+        fout << "c is: " << c << endl;
         if (c == KEY_RESIZE){
             fout << "Resize" << endl;
             endwin();
             initScreen();
             initBoard(board);
         }
-        else if (c == 'q'){
+        else if (c == QUIT_CASE){
             fout << "QUIT" << endl;
             endwin();
             break;
         }
-        else doLogic(board, c);
-        drawScreen(board);
+        else{
+            doLogic(board, c);
+            drawScreen(board);
+        }
+        c = getInput();
     }
     endwin();
     return 0;
@@ -108,40 +121,69 @@ void initBoard(int** board){
     for (int i = 0; i < screenX; i++){
         for (int j = 0; j < screenY; j++){
             if (i == 0 || j == 0 || i == screenX-1 || j == screenY-1){
-                board[i][j] = 1;
+                board[i][j] = WALL;
             }
-            else board[i][j] = 0;
+            else board[i][j] = EMPTY;
         }
     }
     // Set snake head in the middle of the screen
     snakeHeadCoord[0] = screenX/2;
     snakeHeadCoord[1] = screenY/2;
     board[snakeHeadCoord[0]][snakeHeadCoord[1]] = SNAKE;
-    snakeTailCoord[0] = snakeHeadCoord[0]-1;
-    snakeTailCoord[1] = snakeTailCoord[1];
+    snakeTailCoord[0] = snakeHeadCoord[0];
+    snakeTailCoord[1] = snakeHeadCoord[1]+snakeLen;
     board[snakeTailCoord[0]][snakeTailCoord[1]] = SNAKE;
     fout << "Snake set at " << snakeHeadCoord[0] << "," << snakeHeadCoord[1] << endl;
-    fout << "Set Apple" << endl;
-    board[rand() % screenX-2][rand() % screenY-2] = APPLE;
-    //TODO Generate walls
+    int appleX = rand() % (screenX-3) + 1;
+    int appleY = rand() % (screenY-3) + 1;
+    fout << "set apple at (" << appleX << "," << appleY << ")" << endl;
+    board[appleX][appleY] = APPLE;
+    fout <<"set apple" << endl;
+    fout << "Generate walls" << endl;
+    int numWalls = rand() % 30 + 5;
+    bool valid;
+    for (int i = 0; i < numWalls; i++){
+        do{
+        int wallCoordX = rand() % (screenX-5) + 1;
+        int wallCoordY = rand() % (screenY-5) + 1;
+        fout << "set at " << wallCoordX << " " << wallCoordY << endl;
+        valid = 
+        board[wallCoordX][wallCoordY] != SNAKE||
+        board[wallCoordX][wallCoordY] != WALL ||
+        board[wallCoordX][wallCoordY] != APPLE;
+        if (valid)
+            board[wallCoordX][wallCoordY] = WALL;
+        }while (!valid);
+    }
+
 }
 void doLogic(int **board, int move){
     fout << "Do Logic" << endl;
-    fout << "move is " << move << endl; 
-    fout << "Apple set" << endl;
-    fout <<"move is " << move << " last turn is " << lastTurn << endl;
-    fout <<"snake head coord is " << snakeHeadCoord[0] << "," << snakeHeadCoord[1] << endl; 
-    fout << "Move is: " << move << endl;
-    
-    if (lastTurn != move){
+    fout <<"move is " << move << " last turn is " << lastMove << endl;
+    fout <<"snake head coord is " << snakeHeadCoord[0] << "," << snakeHeadCoord[1] << endl;  
+    if (lastMove != move && move != ERR){
         fout << "add move to turn coords, (" << snakeHeadCoord[0] << "," << snakeHeadCoord[1] << "," << move << ")" << endl; 
         turnCoords.push_back(make_tuple(snakeHeadCoord[0], snakeHeadCoord[1], move));
         fout << "move added" << endl;
     }
     //Head
+    fout << "test" << endl;
+    tuple<int,int,int> tcback; 
+    fout << "test" << endl;
+    if (move == ERR || 
+        (lastMove == KEY_UP && move == KEY_DOWN)    ||
+        (lastMove == KEY_DOWN && move == KEY_UP)    ||
+        (lastMove == KEY_LEFT && move == KEY_RIGHT) ||
+        (lastMove == KEY_RIGHT && move == KEY_LEFT)
+       ) move = lastMove;
+    if (!turnCoords.empty() && move != lastMove){
+        tcback = turnCoords.back();
+        move = get<2>(tcback);
+    }
     switch(move){
         case KEY_UP:
             snakeHeadCoord[1] -= 1;
+            fout << "test" << endl;
             break;
         case KEY_DOWN:
             snakeHeadCoord[1] += 1;
@@ -152,47 +194,54 @@ void doLogic(int **board, int move){
         case KEY_RIGHT:
             snakeHeadCoord[0] += 1;
             break;
+        default:
+            break;
     }
+    lastMove = move;
     //Tail
-    tuple<int,int,int> tc = turnCoords.front();
-    int turnDir = get<2>(tc);
-    fout << "enter switch statement" << endl;
-    fout << "turn dir " << turnDir << endl;
-    fout << "KEY_UP: " << KEY_UP << endl;
-    fout << "KEY_DOWN: " << KEY_DOWN << endl;
-    fout << "KEY_LEFT: " << KEY_LEFT << endl;
-    fout << "KEY_RIGHT: " << KEY_RIGHT << endl;
-    fout << "snake tail 0 " << snakeTailCoord[0] << endl;
-    fout << "snake tail 1 " << snakeTailCoord[1] << endl;
-
-    switch(turnDir){
+    int tailMove = move;
+    tuple<int, int, int> tcfront;
+    if (snakeHitTurn){
+        tcfront = turnCoords.front();
+        tailMove = get<2>(tcfront);
+        snakeHitTurn = false;
+        turnCoords.erase(turnCoords.begin());
+    }
+    fout << "passed head loop" << endl;
+    fout << "KEY: " << endl;
+    fout << "KEYUP-"<<KEY_UP << endl;
+    fout << "KEYDOWN-" << KEY_DOWN << endl;
+    fout << "KEY_LEFT" << KEY_LEFT << endl;
+    fout << "KEY_RIGHT" << KEY_RIGHT << endl;
+    fout << "Tail at (" << snakeTailCoord[0] << "," << snakeTailCoord[1] << ")" << endl;
+    fout << "Move is: " << tailMove << endl;
+    fout <<  "Head moving to" << snakeHeadCoord[0] << snakeHeadCoord[1] << endl;
+    switch(tailMove){
         case KEY_UP:
             snakeTailCoord[1] -= 1;
             fout << "set snake tail" << endl;
-            board[snakeTailCoord[0]][snakeTailCoord[1]+1] = 0;
+            board[snakeTailCoord[0]][snakeTailCoord[1]+1] = EMPTY;
             break;
         case KEY_DOWN:
             snakeTailCoord[1] += 1;
-            board[snakeTailCoord[0]][snakeTailCoord[1]-1] = 0;
+            board[snakeTailCoord[0]][snakeTailCoord[1]-1] = EMPTY;
             break;
         case KEY_LEFT:
             snakeTailCoord[0] -= 1;
-            board[snakeTailCoord[0]+1][snakeTailCoord[1]] = 0;
+            board[snakeTailCoord[0]+1][snakeTailCoord[1]] = EMPTY;
             break;
         case KEY_RIGHT:
             snakeTailCoord[0] += 1;
-            board[snakeTailCoord[0]-1][snakeTailCoord[1]] = 0;
+            board[snakeTailCoord[0]-1][snakeTailCoord[1]] = EMPTY;
             break;
     }
-    fout << "add tail to snake" << endl;
+    fout << "Tail moving to (" << snakeTailCoord[0] << "," << snakeTailCoord[1] << ")" << endl;
     board[snakeTailCoord[0]][snakeTailCoord[1]] = SNAKE;
-    if (snakeTailCoord[0] == get<0>(tc) && snakeTailCoord[1] == get<1>(tc)){
-        fout << "snake hit turn" << endl;
-        turnCoords.erase(turnCoords.begin());
-    }
+    snakeHitTurn = snakeTailCoord[0] == get<0>(tcfront) && snakeTailCoord[1] == get<1>(tcfront);
     fout << "check if hit obstacle" << endl;
     if (board[snakeHeadCoord[0]][snakeHeadCoord[1]] == WALL || board[snakeHeadCoord[0]][snakeHeadCoord[1]] == SNAKE){ // If hit obstacle
         fout << "hit obstacle at " << snakeHeadCoord[0] << "," << snakeHeadCoord[1] << endl;
+        fout << "last turn " << lastMove << " current move" << move << endl;
         QUIT = true;
     }
     fout << "check ate apple" << endl;
@@ -204,23 +253,23 @@ void doLogic(int **board, int move){
         board[appleCoord[0]][appleCoord[1]] = APPLE;
         ateApple = false;
         snakeLen += 1;
-        switch(turnDir){
+        switch(tailMove){
             case KEY_UP:
-                snakeTailCoord[0] -= 1;
-                board[snakeTailCoord[0]][snakeTailCoord[1]+1] = 0;
-                break;
-            case KEY_DOWN:
-                snakeTailCoord[0] += 1;
-                board[snakeTailCoord[0]][snakeTailCoord[1]-1] = 0;
-                break;
-            case KEY_LEFT:
-                snakeTailCoord[1] -= 1;
-                board[snakeTailCoord[0]+1][snakeTailCoord[1]] = 0;
-                break;
-            case KEY_RIGHT:
-                snakeTailCoord[1] += 1;
-                board[snakeTailCoord[0]-1][snakeTailCoord[1]] = 0;
-                break;
+            snakeTailCoord[1] -= 1;
+            board[snakeTailCoord[0]][snakeTailCoord[1]+1] = SNAKE;
+            break;
+        case KEY_DOWN:
+            snakeTailCoord[1] += 1;
+            board[snakeTailCoord[0]][snakeTailCoord[1]-1] = SNAKE;
+            break;
+        case KEY_LEFT:
+            snakeTailCoord[0] -= 1;
+            board[snakeTailCoord[0]+1][snakeTailCoord[1]] = SNAKE;
+            break;
+        case KEY_RIGHT:
+            snakeTailCoord[0] += 1;
+            board[snakeTailCoord[0]-1][snakeTailCoord[1]] = SNAKE;
+            break;
         }
     }
     fout << "set head to snake" << endl;
@@ -263,7 +312,6 @@ void getErrFile(){
     n++; // Increment filecount by 1
     s = "errfiles/errfile";
     string errFileName = s.append(to_string(n)); // Set ErrFileName to errfile+n
-    cout << errFileName << endl; //For input piping to cat './game | xargs cat'
     fout.open(errFileName); // Open fout
     errFileIn.close();
     ofstream errFileOut;

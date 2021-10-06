@@ -31,11 +31,6 @@ int snakeLen = 3;
 //Screen Size
 int screenY;
 int screenX;
-//Coordinates
-int snakeTailCoord[2] = {-1,-1}; // Start declared as non existent
-int snakeHeadCoord[2] = {-1,-1};
-int snakeTurnCoord[2] = {-1, -1};
-int appleCoord[2] = {-1,-1};
 //Turn Vector and last turned
 vector<tuple<int,int,int,int, int>> turnCoords; // Before turn move, after turn move, coords where move happened, iterator of num snake parts gone through turn
 vector<tuple<int,int,int>> snakeCoords;
@@ -73,7 +68,6 @@ int main(){
     lastMove = c;
     nodelay(stdscr, true);
     while (!QUIT){
-        fout << "c is: " << c << endl;
         if (c == KEY_RESIZE){
             fout << "Resize" << endl;
             endwin();
@@ -86,8 +80,10 @@ int main(){
             break;
         }
         else{
+            if (c != ERR){ // for testing purposes
             doLogic(board, c);
             drawScreen(board);
+            }
         }
         c = getInput();
     }
@@ -104,6 +100,7 @@ void initScreen(){
     }
     // standard functions
     initscr();
+    curs_set(0); // Remove cursor
     noecho();
     cbreak();
     keypad(stdscr, true); // Enables keypad input
@@ -130,14 +127,14 @@ void initBoard(int** board){
         }
     }
     // Set snake head in the middle of the screen
-    snakeHeadCoord[0] = screenX/2;
-    snakeHeadCoord[1] = screenY/2;
-    snakeTailCoord[0] = snakeHeadCoord[0];
-    snakeTailCoord[1] = snakeHeadCoord[1]+snakeLen-2;
-    snakeCoords.push_back(make_tuple(snakeHeadCoord[0], snakeHeadCoord[1], ERR));
-    snakeCoords.push_back(make_tuple(snakeHeadCoord[0], snakeHeadCoord[1]-1,ERR));
-    snakeCoords.push_back(make_tuple(snakeTailCoord[0], snakeTailCoord[1], ERR));
-    fout << "Snake set at " << snakeHeadCoord[0] << "," << snakeHeadCoord[1] << endl;
+    if (snakeCoords.empty()){
+        int snakeHeadCoordX = screenX/2;
+        int snakeHeadCoordY = screenY/2;
+        snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY, ERR));
+        snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY+1,ERR));
+        snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY+2, ERR));
+        fout << "Snake set at " << snakeHeadCoordX << "," << snakeHeadCoordY << endl;
+    }
     int appleX = rand() % (screenX-3) + 1;
     int appleY = rand() % (screenY-3) + 1;
     fout << "set apple at (" << appleX << "," << appleY << ")" << endl;
@@ -162,6 +159,9 @@ void initBoard(int** board){
 
 }
 void doLogic(int **board, int move){
+    // If move is the same as last move 
+    // Or move is the opposite of last move
+    // set move to last move
     if  (move == ERR || 
         (lastMove == KEY_UP && move == KEY_DOWN)    ||
         (lastMove == KEY_DOWN && move == KEY_UP)    ||
@@ -170,11 +170,12 @@ void doLogic(int **board, int move){
         move = lastMove;
     tuple<int, int, int> snakeHead = snakeCoords.front();
     // Head decides move
-    if (move != lastMove){
+    if (move != lastMove && move != ERR){
         fout << "Added turn coord" << endl;
-        turnCoords.insert(turnCoords.begin(), make_tuple(lastMove, move, get<0>(snakeHead), get<1>(snakeHead), 0)); 
-        // last move for before, next move for after, coords of head for coords of turn, 0 for iterator
+        turnCoords.insert(turnCoords.begin(), make_tuple(lastMove, move, get<0>(snakeHead), get<1>(snakeHead), 1)); 
+        // last move for before, next move for after, coords of head for coords of turn, 1 for iterator
     }
+    // fout print loop
     fout << "Turn Coords: " << endl;
     for (int i = 0; i < turnCoords.size(); i++){
         tuple <int, int, int, int, int> tupleI = turnCoords.at(i);
@@ -182,19 +183,19 @@ void doLogic(int **board, int move){
     }
     switch(move){
             case KEY_UP:
-                fout << "Move is KEY_UP" << endl;
+                fout << "Head move is KEY_UP" << endl;
                 snakeHead = make_tuple(get<0>(snakeHead), get<1>(snakeHead)-1, KEY_UP);
                 break;
             case KEY_DOWN:
-                fout <<"Move is KEY_DOWN" << endl;
+                fout <<"Head move is KEY_DOWN" << endl;
                 snakeHead = make_tuple(get<0>(snakeHead), get<1>(snakeHead)+1, KEY_DOWN);
                 break;
             case KEY_LEFT:
-                fout << "Move is KEY_LEFT" << endl;
+                fout << "Head move is KEY_LEFT" << endl;
                 snakeHead = make_tuple(get<0>(snakeHead)-1, get<1>(snakeHead), KEY_LEFT);
                 break;
             case KEY_RIGHT:
-                fout << "Move is KEY_RIGHT" << endl;
+                fout << "Head move is KEY_RIGHT" << endl;
                 snakeHead = make_tuple(get<0>(snakeHead)+1, get<1>(snakeHead), KEY_RIGHT);
                 break;
             default:
@@ -207,7 +208,7 @@ void doLogic(int **board, int move){
         for (int i = 1; i < snakeCoords.size(); i++){
             // TODO
             // Does this work if the move is below the turn coord? Test in notebook
-            tuple<int,int,int> snakePart = snakeCoords.at(i);// check each element of snake coords starting from begin()
+            tuple<int,int,int> snakePart = snakeCoords.at(i);// check each element of snake coords starting from element above head
             fout << "Set snake part" << endl;
             // check it at turncoords starting from begin()
             tuple<int,int,int,int, int> firstTurn = turnCoords.at(0);
@@ -218,15 +219,17 @@ void doLogic(int **board, int move){
             if (i <= iterator){
                 fout << "Snake less than iterator" << endl;
                 // If snake part coord = turn coord
-                if (get<0>(snakePart) == get<2>(firstTurn) && get<1>(snakePart) == get<2>(snakePart)){
+                if (get<0>(snakePart) == get<2>(firstTurn) && get<1>(snakePart) == get<3>(firstTurn)){
                     fout << "Snake part coords == turn coords" << endl;
-                    snakePart = make_tuple(get<0>(snakePart),get<1>(snakePart),get<0>(firstTurn));
+                    snakePart = make_tuple(get<0>(snakePart),get<1>(snakePart),get<1>(firstTurn));
                     iterator++;
                     }
+                 else
+                    snakePart = make_tuple(get<0>(snakePart),get<1>(snakePart),get<0>(firstTurn));
             }
             // Else set snake move to get<2>
             else
-                snakePart = make_tuple(get<0>(snakePart),get<1>(snakePart),get<1>(firstTurn));
+                snakePart = make_tuple(get<0>(snakePart),get<1>(snakePart),get<0>(firstTurn));
             // Set snake at(i) to snakePart
             snakeCoords.at(i) = snakePart;
             fout << "Set snake to coords" << endl;
@@ -243,6 +246,8 @@ void doLogic(int **board, int move){
     for (int i = 1; i < snakeCoords.size(); i++){
         int moveInLoop;
         tuple<int, int, int> snakePart = snakeCoords.at(i);
+        fout << " i is: " << i << endl;
+        fout << "Snake Part: " << get<0>(snakePart) << "," << get<1>(snakePart) << "," << get<2>(snakePart) << endl;
         if (turnCoordsEmpty)
             moveInLoop = move;
         else
@@ -284,7 +289,7 @@ void doLogic(int **board, int move){
     fout << "test" << endl;
     tuple<int,int,int> tcback; 
     fout << "test" << endl;
-    if (move == ERR || 
+    if  (move == ERR || 
         (lastMove == KEY_UP && move == KEY_DOWN)    ||
         (lastMove == KEY_DOWN && move == KEY_UP)    ||
         (lastMove == KEY_LEFT && move == KEY_RIGHT) ||
@@ -414,7 +419,7 @@ void drawScreen(int** board){
         tuple<int, int, int> snakePart = snakeCoords.at(i);
         move(get<1>(snakePart), get<0>(snakePart));
         printw("0");
-    }
+        }
     refresh();
     attroff(COLOR_PAIR(SNAKE));
 }

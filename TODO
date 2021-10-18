@@ -1,0 +1,2 @@
+Fix issue with resize
+Most likely problem is due to snake being set on board and not changing on reset causing snake to go outside of the new bounds or clipping with a wall

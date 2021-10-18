@@ -13,12 +13,6 @@
 #include "getinput.h" // input header
 using namespace std;
 
-// Vector of <int,int> snakecoords
-// starts with two, snake head and snake tail
-// increment each element every turn, then draws from them
-// in draw, after initial for loop go in to vector for loop and draw on top of coord with move
-// 
-
 //Defines
 #define EMPTY 0
 #define WALL 1
@@ -34,7 +28,7 @@ int screenX;
 //Turn Vector and last turned
 vector<tuple<int,int,int, int>> snakeCoords; // Current Coords X, Y Last Coords X, Y
 int lastMove; // Defined with KEY_UP KEY_DOWN etc...
-int turnCount = 0;
+int score = 0;
 //QUIT bool
 bool QUIT;
 //Apple eaten bool
@@ -75,8 +69,18 @@ int main(){
         }
         else if (c == QUIT_CASE){
             fout << "QUIT" << endl;
-            endwin();
             break;
+        }
+        else if (c == KEY_ESC){
+            while(true){
+                c = getInput();
+                if (c == KEY_ESC)
+                    break;
+                if (c == QUIT_CASE){
+                    QUIT = true;
+                    break;
+                }
+            }
         }
         else{
             doLogic(board, c);
@@ -85,6 +89,8 @@ int main(){
         c = getInput();
     }
     endwin();
+    cout << "Score was: " << score << endl;
+    cout << "Thanks for playing!" << endl;
     return 0;
 }
 
@@ -108,7 +114,7 @@ void initScreen(){
     //Color Pairs
     init_pair(WALL, COLOR_BLACK, COLOR_RED);
     init_pair(APPLE, COLOR_GREEN, COLOR_BLACK);
-    init_pair(SNAKE, COLOR_BLUE, COLOR_BLACK);
+    init_pair(SNAKE, COLOR_RED, COLOR_WHITE);
 }
 void initBoard(int** board){
     fout << "Init Board" << endl;
@@ -128,9 +134,13 @@ void initBoard(int** board){
         int snakeHeadCoordX = screenX/2;
         int snakeHeadCoordY = screenY/2;
         snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY, snakeHeadCoordX, snakeHeadCoordY));
+        board[snakeHeadCoordX][snakeHeadCoordY] = SNAKE;
         snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY+1, snakeHeadCoordX, snakeHeadCoordY+1));
+        board[snakeHeadCoordX][snakeHeadCoordY+1] = SNAKE;
         snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY+2, snakeHeadCoordX, snakeHeadCoordY+2));
-        fout << "Snake set at " << snakeHeadCoordX << "," << snakeHeadCoordY << endl;
+        board[snakeHeadCoordX][snakeHeadCoordY+2] = SNAKE; 
+        snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY+3, snakeHeadCoordX, snakeHeadCoordY+3));
+        //board[snakeHeadCoordX][snakeHeadCoordY+3] = SNAKE;         
     }
     int appleX = rand() % (screenX-3) + 1;
     int appleY = rand() % (screenY-3) + 1;
@@ -198,18 +208,29 @@ void doLogic(int **board, int move){
         tuple<int, int, int, int> lastSnakeHead = snakeCoords.at(i-1);
         int newX = get<2>(lastSnakeHead);
         int newY = get<3>(lastSnakeHead);
+        // Set snake coord at i to x and y of snake part above itself
+        // Set last coords to its own previous coords
         snakeCoords.at(i) = make_tuple(newX, newY, get<0>(currentSnakeHead), get<1>(currentSnakeHead));
-    }
-    if (board[get<0>(snakeHead)][get<1>(snakeHead)] == WALL){
+        fout << "Snake Part " << i << "moved to (" << newX << "," << newY << ")" << endl;
+        board[newX][newY] = SNAKE;
+   }
+    tuple<int, int, int, int> snakeBack = snakeCoords.back();
+    board[get<2>(snakeBack)][get<3>(snakeBack)] = EMPTY;
+    int occupiedSpot = board[get<0>(snakeHead)][get<1>(snakeHead)];
+    if (occupiedSpot == WALL || occupiedSpot == SNAKE){
         QUIT = true;
     }
     int snakeX = get<0>(snakeHead);
     int snakeY = get<1>(snakeHead);
     if (board[snakeX][snakeY] == APPLE){
+        // Increment score
+        // TODO add high score
+        score++; 
         board[snakeX][snakeY] = EMPTY;
         tuple<int, int, int, int> endSnake = snakeCoords.back();
         int newX;
         int newY;
+        // Set location for new snake part
         switch (lastMove){
             case KEY_UP: 
             endSnake = make_tuple(get<0>(endSnake), get<1>(endSnake)+1, get<0>(endSnake), get<1>(endSnake));
@@ -229,15 +250,16 @@ void doLogic(int **board, int move){
         snakeCoords.push_back(endSnake);
         bool valid;
         do{
+            // Set new random move 
             int appleX = rand() % (screenX-3) + 1;
             int appleY = rand() % (screenY-3) + 1;
+            // Check random location not on wall
             valid = board[appleX][appleY] != WALL;
             if (valid){
                 board[appleX][appleY] = APPLE;
             }
         }
         while(!valid);
-        //TODO Add score and high score
         
     }
     lastMove = move;
@@ -245,12 +267,16 @@ void doLogic(int **board, int move){
 void drawScreen(int** board){
     for (int x = 0; x < screenX; x++){
         for (int y = 0; y < screenY; y++){
-            //fout << "\toutput at" << x << "," << y << endl;
             move(y, x);
             if (board[x][y] == WALL){
                 attron(COLOR_PAIR(WALL));
                 printw("x");
                 attroff(COLOR_PAIR(WALL));
+            }
+            else if (board[x][y] == SNAKE){
+                attron(COLOR_PAIR(SNAKE));
+                printw("0");
+                attroff(COLOR_PAIR(SNAKE));
             }
             else if (board[x][y] == APPLE){
                 attron(COLOR_PAIR(APPLE));
@@ -262,14 +288,6 @@ void drawScreen(int** board){
             refresh();
         }
     }
-    attron(COLOR_PAIR(SNAKE));
-    for (int i = 0; i < snakeCoords.size(); i++){
-        tuple<int, int, int, int> snakePart = snakeCoords.at(i);
-        move(get<1>(snakePart), get<0>(snakePart));
-        printw("0");
-        }
-    refresh();
-    attroff(COLOR_PAIR(SNAKE));
 }
 
 void getErrFile(){

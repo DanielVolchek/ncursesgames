@@ -24,7 +24,7 @@ ofstream fout;
 int sleepTime = 250; // Default
 
 int memory = 0; // Default
-Vector<Vector<tuple<int, int>>> memVect; // Vector(memory) of vector(boards) of tuples(live cell coords)
+vector<vector<tuple<int, int>>> memVect; // Vector(memory) of vector(boards) of tuples(live cell coords)
 //Screen Size
 int screenY;
 int screenX;
@@ -34,28 +34,27 @@ bool START = false;
 bool QUIT = false;
 //function decleration
 void initScreen(); // Init Screen
-string enterCommand(); // Enter command output command
 void initBoard(int** board); // Init board
 void doLogic(int** board); // Do logic
-void drawScreen(int** board); // Draw screen
+void drawScreen(int** board, bool setting); // Draw screen
 bool checkLiveState(int** board, int x, int y); // check state of element on x y
 void setState(int** board); // Change board with user input
-void runGame(); // Deprecated for now
+void runGame(int **board); // Deprecated for now
 void getErrFile(); // Err file for debugging
 //commands
-string enterCommand();
-bool help(string command);
-bool skip(int n, int **board);
-bool setMem(int n);
-bool start();
-bool stop();
-bool clear();
-bool mod(int **board);
-bool step(int n, int **board);
-bool quit();
-bool save(string filename, int **board);
-bool load(string filename, int **board);
-bool setSpeed(int n);
+void enterCommand(int **board);
+void help(int **board);
+void skip(string flag, int **board);
+void setMem(string flag);
+void start();
+void stop();
+void clearBoard(int **board);
+void mod(int **board);
+void step(string flag, int **board);
+void quit();
+void save(string filename, int **board);
+void load(string filename, int **board);
+void setSpeed(string flag, int **board);
 
 int main(){
     getErrFile();
@@ -65,16 +64,17 @@ int main(){
     initBoard(board);
     fout << "Draw Screen" << endl;
     drawScreen(board, false);
-    runGame(int **board); 
+    runGame(board); 
     endwin();
     return 0;
 }
 void runGame(int **board){
-   int c;
+   char c;
+   setState(board);
    while(!QUIT){
         c = getch();
         if (c == '/'){
-            enterCommand();
+            enterCommand(board);
         }
         while (START){
             if (c == KEY_RESIZE){
@@ -88,11 +88,12 @@ void runGame(int **board){
                 break;
             }
             else if (c == '/'){
-                enterCommand();
+                enterCommand(board);
+                c = ' ';
             }
             else{
                 doLogic(board);
-                drawScreen(board);
+                drawScreen(board, false);
                 }
             c = getch();
         }
@@ -111,8 +112,8 @@ void initScreen(){
     curs_set(0); // Remove cursor
     noecho();
     cbreak();
-    keypad(stdscr, true); // Enables keypad input
     nodelay(stdscr, true);
+    keypad(stdscr, true); // Enables keypad input
     start_color();
     refresh();
     getmaxyx(stdscr, screenY, screenX); // Assigns screen size variables
@@ -298,59 +299,59 @@ void getErrFile(){
     }
 }
 
-string enterCommand(int **board){
+void enterCommand(int **board){
     echo();
     curs_set(1);
-    move(screenY+1, 0);
+    move(screenY, 0);
+    nodelay(stdscr, false);
+    printw("/");
+    move(screenY, 1);
     string command;
-    int ch;
-    while (ch != KEY_ENTER){
-        ch = getch(); 
+    char ch;
+    while (1){
+        ch = getch();
+        if (ch == ENTER_KEY){
+            break;
+        }
+        command += ch;
     }
+    clear();
     string action;
     string flag;
-    int n;
     for (int i = 0; i < command.length(); i++){
         if (command.at(i) == ' '){
             action = command.substr(0, i);
             flag = command.substr(i, command.length() - i);
         }
     }
-    try{
-        n = stoi(s);
-    }
-    catch(...){
-        n = -1;
-    }
+    if (flag == "")
+        action = command;
     fout << "Command is: " << command << " flag is " << flag << endl;
-    switch(command){
-        case "help": help(); break;
-        case "skip": skip(n) break;
-        case "setmem": setMem(n); break;
-        case "start": start(); break;
-        case "stop": stop(); break;
-        case "clear": clear(); break;
-        case "mod": mod(); break;
-        case "step": step(n); break;
-        case "quit": quit(); break;
-        case "save": save(string flag); break;
-        case "load": load(string flag); break;
-        case "speed": setSpeed(n); break;
-        default: help(); break;
-    }
+        if(command=="help") help(board);
+        else if(command=="skip") skip(flag, board);
+        else if(command=="setmem") setMem(flag);
+        else if(command=="start") start();
+        else if(command=="stop") stop();
+        else if(command=="clear") clearBoard(board);
+        else if(command=="mod") mod(board);
+        else if(command=="step") step(flag, board);
+        else if(command=="quit") quit();
+        else if(command=="save") save(flag, board);
+        else if(command=="load") load(flag, board);
+        else if(command=="speed") setSpeed(flag, board);
+        else help(board);
     noecho();
     curs_set(0);
-        
-
+    nodelay(stdscr, true);
 //wait for enter press
 //help - Goes through all commands with options
-    // clear screen output each command line by line
+    // clearBoard screen output each command line by line
 //skip x - Skips X increments 
 //setmem - set number of states to remember
 //keep 5-10 boards in memory and skip/step through them backwards
 //start - Runs program
 //stop - pauses program
-//clear - clears board
+//clearBoard - clearBoards board
 //mod - change input to GoL
 //step - step once before pausing
 //step x - step through x times showing change
@@ -358,55 +359,94 @@ string enterCommand(int **board){
 //save filename - save state to file
 //load filename - load state from file
 //speed - change speed in ms
-return NULL;
 }
-bool help(string command){
-    
+void help(int **board){
+    clear();
+    fout << "help" << endl; 
+    mvprintw(0, 0, "help: outputs help for commands"); 
+    mvprintw(1, 0, "skip n: skips n times");
+    mvprintw(2, 0, "setmem n: sets memory range");
+    mvprintw(3, 0, "start: starts program running");
+    mvprintw(4, 0, "stop: stops program running");
+    mvprintw(5, 0, "clear: clears state");
+    mvprintw(6, 0, "mod: enters modification function");
+    mvprintw(7, 0, "step n: steps through n times");
+    mvprintw(8, 0, "quit: exits program");
+    mvprintw(9, 0, "save filename: saves state to file");
+    mvprintw(10, 0, "load filename: loads state from file");
+    mvprintw(11, 0, "speed n: sets speed in ms");
+    mvprintw(12, 0, "enter q to exit");
+    char c;
+    noecho();
+    while (c != 'q'){
+        c = getch();
+    }
+    clear();
+    drawScreen(board, false);
 }
-bool skip(int n, int **board){
+void skip(string flag, int **board){
+    fout << "skip" << endl;
+    int n = stoi(flag);
     if (n >= 0){
         for (int i = 0; i < n; i++){
             doLogic(board);
         }
     }
+    START = false;
     // add n is negative with memory
 }
-bool setMem(int n){
+void setMem(string flag){
+    fout << "setMem" << endl;
+    int n = stoi(flag);
     memory = n;
 }
-bool start(){
+void start(){
+    fout << "start" << endl;
     START = true;
 }
-bool stop(int **board){
+void stop(){
+    fout << "stop" << endl;
     START = false;
 }
-bool clear(int **board){
+void clearBoard(int **board){
+    fout << "clear board" << endl;
+    for (int i = 0; i < screenX; i++){
+        for (int j = 0; j < screenY; j++){
+            board[i][j] = 0;
+        }
+    }
 }
-bool mod(int **board){
+void mod(int **board){
+    fout << "mod" << endl;
     setState(board);
-    return true;
 }
-bool step(int n, int **board){
+void step(string flag, int **board){
+    fout << "step" << endl;
+    int n = stoi(flag);
     if (n >= 0){
         for (int i = 0; i < n; i++){
             doLogic(board);
             drawScreen(board, false);
         }
     }
+    START = false;
 }
-bool quit(){
+void quit(){
+    fout << "quit" << endl;
     QUIT = true;
 }
-bool save(string filename, int **board){
-
+void save(string filename, int **board){
+    fout << "save" << endl;
 }
-bool load(string filename, int **board){
-
+void load(string filename, int **board){
+    fout << "load" << endl;
 }
-bool setSpeed(int n){
+void setSpeed(string flag, int **board){
+    fout << "setSpeed" << endl;
+    int n = stoi(flag);
     if (n >=0)
         sleepTime = n;
     else
-        help();
+        help(board);
 }
 

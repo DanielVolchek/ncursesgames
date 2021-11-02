@@ -1,0 +1,611 @@
+Init Screen
+Screen X: 164 Screen Y: 41
+Init Board
+set apple at (54,10)
+set apple at (73,24)
+set apple at (65,24)
+set apple at (159,15)
+set apple at (129,3)
+set apple
+Generate walls
+set at 137 4
+set at 91 25
+set at 36 21
+set at 57 23
+set at 15 21
+set at 135 23
+set at 38 10
+set at 145 12
+set at 157 18
+set at 123 11
+set at 121 17
+set at 123 10
+set at 44 3
+set at 52 11
+set at 29 18
+set at 46 18
+set at 136 35
+set at 103 19
+set at 151 21
+set at 24 28
+set at 17 14
+set at 124 16
+set at 45 28
+set at 39 16
+set at 58 32
+Draw Screen
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,20)
+Snake Part 2moved to (82,21)
+Snake Part 3moved to (82,22)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,19)
+Snake Part 2moved to (82,20)
+Snake Part 3moved to (82,21)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,18)
+Snake Part 2moved to (82,19)
+Snake Part 3moved to (82,20)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,17)
+Snake Part 2moved to (82,18)
+Snake Part 3moved to (82,19)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,16)
+Snake Part 2moved to (82,17)
+Snake Part 3moved to (82,18)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,15)
+Snake Part 2moved to (82,16)
+Snake Part 3moved to (82,17)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,14)
+Snake Part 2moved to (82,15)
+Snake Part 3moved to (82,16)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,13)
+Snake Part 2moved to (82,14)
+Snake Part 3moved to (82,15)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,12)
+Snake Part 2moved to (82,13)
+Snake Part 3moved to (82,14)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,11)
+Snake Part 2moved to (82,12)
+Snake Part 3moved to (82,13)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,10)
+Snake Part 2moved to (82,11)
+Snake Part 3moved to (82,12)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,9)
+Snake Part 2moved to (82,10)
+Snake Part 3moved to (82,11)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,8)
+Snake Part 2moved to (82,9)
+Snake Part 3moved to (82,10)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,7)
+Snake Part 2moved to (82,8)
+Snake Part 3moved to (82,9)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,6)
+Snake Part 2moved to (82,7)
+Snake Part 3moved to (82,8)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (82,5)
+Snake Part 2moved to (82,6)
+Snake Part 3moved to (82,7)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (82,4)
+Snake Part 2moved to (82,5)
+Snake Part 3moved to (82,6)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (81,4)
+Snake Part 2moved to (82,4)
+Snake Part 3moved to (82,5)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (80,4)
+Snake Part 2moved to (81,4)
+Snake Part 3moved to (82,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (79,4)
+Snake Part 2moved to (80,4)
+Snake Part 3moved to (81,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (78,4)
+Snake Part 2moved to (79,4)
+Snake Part 3moved to (80,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (77,4)
+Snake Part 2moved to (78,4)
+Snake Part 3moved to (79,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (76,4)
+Snake Part 2moved to (77,4)
+Snake Part 3moved to (78,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (75,4)
+Snake Part 2moved to (76,4)
+Snake Part 3moved to (77,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (74,4)
+Snake Part 2moved to (75,4)
+Snake Part 3moved to (76,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (73,4)
+Snake Part 2moved to (74,4)
+Snake Part 3moved to (75,4)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (72,4)
+Snake Part 2moved to (73,4)
+Snake Part 3moved to (74,4)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,4)
+Snake Part 2moved to (72,4)
+Snake Part 3moved to (73,4)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,5)
+Snake Part 2moved to (71,4)
+Snake Part 3moved to (72,4)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,6)
+Snake Part 2moved to (71,5)
+Snake Part 3moved to (71,4)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,7)
+Snake Part 2moved to (71,6)
+Snake Part 3moved to (71,5)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,8)
+Snake Part 2moved to (71,7)
+Snake Part 3moved to (71,6)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,9)
+Snake Part 2moved to (71,8)
+Snake Part 3moved to (71,7)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,10)
+Snake Part 2moved to (71,9)
+Snake Part 3moved to (71,8)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,11)
+Snake Part 2moved to (71,10)
+Snake Part 3moved to (71,9)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,12)
+Snake Part 2moved to (71,11)
+Snake Part 3moved to (71,10)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,13)
+Snake Part 2moved to (71,12)
+Snake Part 3moved to (71,11)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,14)
+Snake Part 2moved to (71,13)
+Snake Part 3moved to (71,12)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,15)
+Snake Part 2moved to (71,14)
+Snake Part 3moved to (71,13)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,16)
+Snake Part 2moved to (71,15)
+Snake Part 3moved to (71,14)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (71,17)
+Snake Part 2moved to (71,16)
+Snake Part 3moved to (71,15)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (71,18)
+Snake Part 2moved to (71,17)
+Snake Part 3moved to (71,16)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (72,18)
+Snake Part 2moved to (71,18)
+Snake Part 3moved to (71,17)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (73,18)
+Snake Part 2moved to (72,18)
+Snake Part 3moved to (71,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (74,18)
+Snake Part 2moved to (73,18)
+Snake Part 3moved to (72,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (75,18)
+Snake Part 2moved to (74,18)
+Snake Part 3moved to (73,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (76,18)
+Snake Part 2moved to (75,18)
+Snake Part 3moved to (74,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (77,18)
+Snake Part 2moved to (76,18)
+Snake Part 3moved to (75,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (78,18)
+Snake Part 2moved to (77,18)
+Snake Part 3moved to (76,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (79,18)
+Snake Part 2moved to (78,18)
+Snake Part 3moved to (77,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (80,18)
+Snake Part 2moved to (79,18)
+Snake Part 3moved to (78,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (81,18)
+Snake Part 2moved to (80,18)
+Snake Part 3moved to (79,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (82,18)
+Snake Part 2moved to (81,18)
+Snake Part 3moved to (80,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (83,18)
+Snake Part 2moved to (82,18)
+Snake Part 3moved to (81,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (84,18)
+Snake Part 2moved to (83,18)
+Snake Part 3moved to (82,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (85,18)
+Snake Part 2moved to (84,18)
+Snake Part 3moved to (83,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (86,18)
+Snake Part 2moved to (85,18)
+Snake Part 3moved to (84,18)
+Head move is KEY_RIGHT
+Passed snake head check
+Snake Part 1moved to (87,18)
+Snake Part 2moved to (86,18)
+Snake Part 3moved to (85,18)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,18)
+Snake Part 2moved to (87,18)
+Snake Part 3moved to (86,18)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,19)
+Snake Part 2moved to (88,18)
+Snake Part 3moved to (87,18)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,20)
+Snake Part 2moved to (88,19)
+Snake Part 3moved to (88,18)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,21)
+Snake Part 2moved to (88,20)
+Snake Part 3moved to (88,19)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,22)
+Snake Part 2moved to (88,21)
+Snake Part 3moved to (88,20)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,23)
+Snake Part 2moved to (88,22)
+Snake Part 3moved to (88,21)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,24)
+Snake Part 2moved to (88,23)
+Snake Part 3moved to (88,22)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,25)
+Snake Part 2moved to (88,24)
+Snake Part 3moved to (88,23)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,26)
+Snake Part 2moved to (88,25)
+Snake Part 3moved to (88,24)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,27)
+Snake Part 2moved to (88,26)
+Snake Part 3moved to (88,25)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (88,28)
+Snake Part 2moved to (88,27)
+Snake Part 3moved to (88,26)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (88,29)
+Snake Part 2moved to (88,28)
+Snake Part 3moved to (88,27)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (87,29)
+Snake Part 2moved to (88,29)
+Snake Part 3moved to (88,28)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (86,29)
+Snake Part 2moved to (87,29)
+Snake Part 3moved to (88,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (85,29)
+Snake Part 2moved to (86,29)
+Snake Part 3moved to (87,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (84,29)
+Snake Part 2moved to (85,29)
+Snake Part 3moved to (86,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (83,29)
+Snake Part 2moved to (84,29)
+Snake Part 3moved to (85,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (82,29)
+Snake Part 2moved to (83,29)
+Snake Part 3moved to (84,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (81,29)
+Snake Part 2moved to (82,29)
+Snake Part 3moved to (83,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (80,29)
+Snake Part 2moved to (81,29)
+Snake Part 3moved to (82,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (79,29)
+Snake Part 2moved to (80,29)
+Snake Part 3moved to (81,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (78,29)
+Snake Part 2moved to (79,29)
+Snake Part 3moved to (80,29)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (77,29)
+Snake Part 2moved to (78,29)
+Snake Part 3moved to (79,29)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,29)
+Snake Part 2moved to (77,29)
+Snake Part 3moved to (78,29)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,28)
+Snake Part 2moved to (76,29)
+Snake Part 3moved to (77,29)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,27)
+Snake Part 2moved to (76,28)
+Snake Part 3moved to (76,29)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,26)
+Snake Part 2moved to (76,27)
+Snake Part 3moved to (76,28)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,25)
+Snake Part 2moved to (76,26)
+Snake Part 3moved to (76,27)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,24)
+Snake Part 2moved to (76,25)
+Snake Part 3moved to (76,26)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,23)
+Snake Part 2moved to (76,24)
+Snake Part 3moved to (76,25)
+Head move is KEY_UP
+Passed snake head check
+Snake Part 1moved to (76,22)
+Snake Part 2moved to (76,23)
+Snake Part 3moved to (76,24)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (76,21)
+Snake Part 2moved to (76,22)
+Snake Part 3moved to (76,23)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (75,21)
+Snake Part 2moved to (76,21)
+Snake Part 3moved to (76,22)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (74,21)
+Snake Part 2moved to (75,21)
+Snake Part 3moved to (76,21)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (73,21)
+Snake Part 2moved to (74,21)
+Snake Part 3moved to (75,21)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (72,21)
+Snake Part 2moved to (73,21)
+Snake Part 3moved to (74,21)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (71,21)
+Snake Part 2moved to (72,21)
+Snake Part 3moved to (73,21)
+Head move is KEY_LEFT
+Passed snake head check
+Snake Part 1moved to (70,21)
+Snake Part 2moved to (71,21)
+Snake Part 3moved to (72,21)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,21)
+Snake Part 2moved to (70,21)
+Snake Part 3moved to (71,21)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,22)
+Snake Part 2moved to (69,21)
+Snake Part 3moved to (70,21)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,23)
+Snake Part 2moved to (69,22)
+Snake Part 3moved to (69,21)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,24)
+Snake Part 2moved to (69,23)
+Snake Part 3moved to (69,22)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,25)
+Snake Part 2moved to (69,24)
+Snake Part 3moved to (69,23)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,26)
+Snake Part 2moved to (69,25)
+Snake Part 3moved to (69,24)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,27)
+Snake Part 2moved to (69,26)
+Snake Part 3moved to (69,25)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,28)
+Snake Part 2moved to (69,27)
+Snake Part 3moved to (69,26)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,29)
+Snake Part 2moved to (69,28)
+Snake Part 3moved to (69,27)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,30)
+Snake Part 2moved to (69,29)
+Snake Part 3moved to (69,28)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,31)
+Snake Part 2moved to (69,30)
+Snake Part 3moved to (69,29)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,32)
+Snake Part 2moved to (69,31)
+Snake Part 3moved to (69,30)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,33)
+Snake Part 2moved to (69,32)
+Snake Part 3moved to (69,31)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,34)
+Snake Part 2moved to (69,33)
+Snake Part 3moved to (69,32)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,35)
+Snake Part 2moved to (69,34)
+Snake Part 3moved to (69,33)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,36)
+Snake Part 2moved to (69,35)
+Snake Part 3moved to (69,34)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,37)
+Snake Part 2moved to (69,36)
+Snake Part 3moved to (69,35)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,38)
+Snake Part 2moved to (69,37)
+Snake Part 3moved to (69,36)
+Head move is KEY_DOWN
+Passed snake head check
+Snake Part 1moved to (69,39)
+Snake Part 2moved to (69,38)
+Snake Part 3moved to (69,37)

@@ -1,0 +1,38 @@
+Init Screen
+Screen X: 164 Screen Y: 41
+Init Board
+set apple at (152,14)
+set apple at (133,35)
+set apple at (81,35)
+set apple at (101,4)
+set apple at (112,27)
+set apple
+Generate walls
+set at 154 28
+set at 59 1
+set at 69 26
+set at 18 20
+set at 78 35
+set at 35 31
+set at 68 13
+set at 146 29
+set at 37 9
+set at 118 27
+set at 58 30
+set at 18 3
+set at 16 33
+set at 81 30
+set at 39 33
+set at 109 32
+set at 40 3
+set at 134 3
+set at 40 32
+set at 126 13
+set at 13 4
+set at 20 11
+set at 153 3
+set at 76 30
+set at 45 32
+set at 114 13
+Draw Screen
+QUIT

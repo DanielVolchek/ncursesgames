@@ -38,7 +38,6 @@ bool snakeHitTurn;
 void initScreen();
 void initBoard(int** board); 
 void doLogic(int** board, int move); 
-void doLogic(int** board, int move);
 void drawScreen(int** board);
 void runGame();
 void pauseScreen(); //TODO

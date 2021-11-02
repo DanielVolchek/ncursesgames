@@ -11,6 +11,8 @@
 #include <fstream>
 #include "ball.h"
 #include "paddle.h"
+#include "bubble.h"
+
 #define QUIT_CASE -10
 #define SLOW_DOWN_MS 50 
 #define KEY_ESC 27
@@ -30,6 +32,7 @@ bool checkBallHit();
 void initBall();
 void incrementBall();
 void drawMid();
+void drawScore(int score1, int score2);
 void drawScreen();
 void movePaddles(int direction);
 void initPaddles();
@@ -198,9 +201,38 @@ void drawMid(){
         mvprintw(i, screenX/2, "|");
     }
 }
+void drawScore(int score1, int score2){
+    int length1;
+    int length2;
+    string s1 = getLetter(score1, length1);
+    string s2 = getLetter(score2, length2);
+    int x1 = screenX/2 - screenX/4;
+    int x2 = screenX/2 + screenX/4;
+    int y1 = 0;
+    int y2 = 0;
+    int inc1 = 0;
+    int inc2 = 0;
+    for (int i = 0; i < length1; i++){
+        char c = s1.at(i);
+        mvprintw(y1, x1+inc1++, "%c", c);
+        if (c == '\n'){
+            y1++;
+            inc1 = 0;
+        }
+    }
+    for (int j = 0; j < length2; j++){
+        char c = s2.at(i);
+        mvprintw(y2, x2+inc2++, "%c", c);
+        if (c == '\n'){
+            y2++;
+            inc2 = 0;
+        }
+    }
+}
 void drawScreen(){
     drawPaddles();
     drawMid();
+    drawScore(score1, score2);
     drawBall();
     refresh();
     this_thread::sleep_for(chrono::milliseconds(SLOW_DOWN_MS));

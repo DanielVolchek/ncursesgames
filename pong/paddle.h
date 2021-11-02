@@ -12,8 +12,5 @@ class paddle{
         int length;
         int width = 3;
         int score = 0;
-        void setCoord(int moveX, int moveY){
-            x = moveX;
-            y = moveY;
-        }
+        void setCoord(int moveX, int moveY);
 };

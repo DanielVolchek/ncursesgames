@@ -3,7 +3,10 @@
 //Section_01
 
 //Code:
+
 #include <iostream>
+#ifndef BALL_H
+#define BALL_H
 using namespace std;
 class ball{
     private:
@@ -12,9 +15,6 @@ class ball{
         int x;
         int y;
         int vx;
-        int vy;
-        void initBall(int screenY, int screenX, int dir){
-            x = screenX/2;
-            y = screenY/2;
-        }
+        int vy; 
 };
+#endif

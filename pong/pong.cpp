@@ -16,6 +16,8 @@
 #define QUIT_CASE -10
 #define SLOW_DOWN_MS 50 
 #define KEY_ESC 27
+#define PLAYER_ONE 1
+#define PLAYER_TWO 2
 using namespace std;
 
 ofstream fout;
@@ -24,15 +26,14 @@ int screenX;
 paddle paddleOne;
 paddle paddleTwo;
 ball ballOne;
-int score1;
-int score2;
+bool scoreChanged;
 
 void runGame();
 bool checkBallHit();
 void initBall();
 void incrementBall();
 void drawMid();
-void drawScore(int score1, int score2);
+void drawScore();
 void drawScreen();
 void movePaddles(int direction);
 void initPaddles();
@@ -56,6 +57,7 @@ void initScreen(){
     }
     // standard functions
     initscr();
+    start_color();
     curs_set(0); // Remove cursor
     noecho();
     cbreak();
@@ -65,9 +67,17 @@ void initScreen(){
     refresh();
     getmaxyx(stdscr, screenY, screenX); // Assigns screen size variables
     fout << "Screen X: " << screenX << " Screen Y: " << screenY << endl;
- 
+    init_pair(PLAYER_ONE, COLOR_GREEN, COLOR_BLACK);
+    init_pair(PLAYER_TWO, COLOR_GREEN, COLOR_BLACK);
+}
+void resizeScreen(){
+    getmaxyx(stdscr, screenY, screenX);
+    clear();
+    initPaddles();
+    initBall();
 }
 void runGame(){
+    scoreChanged = false;
     initScreen();
     initPaddles();
     initBall();
@@ -88,8 +98,15 @@ void runGame(){
                     goto stop;
                 }
             }
-        }  
-        if (c != 0 || c != KEY_ESC){
+        }
+        if (c == KEY_RESIZE){
+            //resizeScreen();
+            //curs_set(0);
+            initScreen();
+            initPaddles();
+            initBall();
+        }
+        if (c == 1 || c == -1){
             movePaddles(c);
         }
         incrementBall();
@@ -137,18 +154,20 @@ void incrementBall(){
     int moveX = ballOne.x + ballOne.vx;
     int moveY = ballOne.y + ballOne.vy;
     mvprintw(ballOne.y, ballOne.x, " ");
-    if (moveX < 0){
+    if (moveX <= 0){
+       scoreChanged = true;
        paddleTwo.score++;
        initBall();
     }
-    else if (moveX >= screenX){
+    else if (moveX >= screenX-1){
         paddleOne.score++;
+        scoreChanged = true;
         initBall();
     }
     else{
         ballOne.x = moveX;
     }
-    if (moveY < 0){
+    if (moveY <= 0){
         ballOne.y = 0;
         ballOne.vy = -ballOne.vy;
     } 
@@ -180,6 +199,7 @@ int getInput(){
         case KEY_UP: return -1;
         case KEY_DOWN: return 1;
         case KEY_ESC: return KEY_ESC;
+        case KEY_RESIZE: return KEY_RESIZE;
         case 'q': return QUIT_CASE;
         default: return 0;
     }
@@ -201,17 +221,18 @@ void drawMid(){
         mvprintw(i, screenX/2, "|");
     }
 }
-void drawScore(int score1, int score2){
+void drawScore(){
     int length1;
     int length2;
-    string s1 = getLetter(score1, length1);
-    string s2 = getLetter(score2, length2);
+    string s1 = getLetter(paddleOne.score, &length1);
+    string s2 = getLetter(paddleTwo.score, &length2);
     int x1 = screenX/2 - screenX/4;
-    int x2 = screenX/2 + screenX/4;
+    int x2 = screenX - screenX/4;
     int y1 = 0;
     int y2 = 0;
     int inc1 = 0;
     int inc2 = 0;
+    attron(COLOR_PAIR(PLAYER_ONE));
     for (int i = 0; i < length1; i++){
         char c = s1.at(i);
         mvprintw(y1, x1+inc1++, "%c", c);
@@ -220,7 +241,9 @@ void drawScore(int score1, int score2){
             inc1 = 0;
         }
     }
-    for (int j = 0; j < length2; j++){
+    attroff(COLOR_PAIR(PLAYER_ONE));
+    attron(COLOR_PAIR(PLAYER_TWO));
+    for (int i = 0; i < length2; i++){
         char c = s2.at(i);
         mvprintw(y2, x2+inc2++, "%c", c);
         if (c == '\n'){
@@ -228,11 +251,16 @@ void drawScore(int score1, int score2){
             inc2 = 0;
         }
     }
+    attroff(COLOR_PAIR(PLAYER_TWO));
 }
 void drawScreen(){
+    if (scoreChanged){
+        scoreChanged = false;
+        clear();
+    }
     drawPaddles();
+    drawScore();
     drawMid();
-    drawScore(score1, score2);
     drawBall();
     refresh();
     this_thread::sleep_for(chrono::milliseconds(SLOW_DOWN_MS));

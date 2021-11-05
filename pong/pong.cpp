@@ -3,23 +3,9 @@
 //Section_01
 
 //Code:
-#include <iostream>
-#include <ncurses.h>
-#include <tuple>
-#include <thread>
-#include <chrono>
-#include <fstream>
-#include "ball.h"
-#include "paddle.h"
-#include "bubble.h"
-
-#define QUIT_CASE -10
-#define SLOW_DOWN_MS 50 
-#define KEY_ESC 27
-#define PLAYER_ONE 1
-#define PLAYER_TWO 2
+#include "includes.h"
 using namespace std;
-
+namespace pong{
 ofstream fout;
 int screenY;
 int screenX;
@@ -27,27 +13,6 @@ paddle paddleOne;
 paddle paddleTwo;
 ball ballOne;
 bool scoreChanged;
-
-void runGame();
-void endGame(bool win);
-bool checkBallHit();
-void initBall();
-void incrementBall();
-void drawMid();
-void drawScore();
-void drawScreen();
-void movePaddles(int direction);
-void initPaddles();
-void drawPaddles();
-void initScreen();
-void resizeScreen();
-int getInput();
-
-int main(){
-    fout.open("errfile");
-    runGame();
-    return 0;
-}
 
 void initScreen(){
     fout << "Init Screen" << endl;
@@ -79,6 +44,7 @@ void resizeScreen(){
 }
 void runGame(){
     scoreChanged = false;
+    int lastMove;
     initScreen();
     initPaddles();
     initBall();
@@ -114,13 +80,15 @@ void runGame(){
             initBall();
         }
         if (c == 1 || c == -1){
-            movePaddles(c);
+            movePaddles(&paddleOne, c, &lastMove);
         }
+        doCPUMove();
         incrementBall();
         drawScreen();
     }
-    stop: 
+    stop:
     endwin();
+    flushinp();
 }
 void endGame(bool win){
     if (win)
@@ -130,43 +98,109 @@ void endGame(bool win){
 }
 void initPaddles(){
     // Paddles should be one fifth of the vertical length
-    //TODO
     paddleOne.length = screenY / 5;
-    paddleTwo.length = screenY / 5; //screenY5;
+    paddleTwo.length = screenY / 5;
+    //Player speeds
+    paddleOne.velocity = 1;
+    paddleOne.max_velocity = 3;
+    //Cpu speeds
+    paddleTwo.velocity = 1;
+    paddleTwo.max_velocity = 1;
+    //Initial paddle positions
     paddleOne.setCoord(0, screenY/2-(paddleOne.length/2));
     paddleTwo.setCoord(screenX-1, screenY/2-(paddleOne.length/2));
 }
 void initBall(){
-    double speedPercent = ballOne.y / paddleOne.y;
+    //Initial location
     ballOne.x = screenX/2;
     ballOne.y = screenY/2;
-    ballOne.vx = 1;
-    ballOne.vy = 1;
+    //Initial speed
+    //TODO set random starting direction
+    if (ballOne.lastHitBy != PLAYER_TWO){
+        ballOne.vx = 1;
+        ballOne.vy = -1;
+        ballOne.lastHitBy = PLAYER_ONE;
+    }
+    else{
+        if (ballOne.lastHitBy == PLAYER_ONE){
+            ballOne.vx = 1;
+        }
+        else{
+            ballOne.vx = -1;
+        }
+        ballOne.vy = 1;
+    }
+    //TODO then set starting direction to change based on last score
 }
-void movePaddles(int direction){
-    //TODO modify to get passed in paddle
+void movePaddles(paddle* p, int direction, int *lastMove){
     flushinp();
-    int paddleYMove = paddleOne.y + direction;
-    if (paddleYMove+paddleOne.length > screenY || paddleYMove < 0)
+    // If move is the same as last move increase velocity of paddle
+    if (direction == *lastMove){
+        p -> velocity++;
+        if (p -> velocity > p-> max_velocity)
+            p -> velocity = p -> max_velocity;
+    }
+    // Otherwise decrease velocity of paddle
+    else{
+        *lastMove = direction;
+        p -> velocity--;
+        if (p -> velocity <= 0)
+            p -> velocity = 1;
+    }
+    int paddleYMove = p -> y + (direction*p->velocity); 
+    clearPaddle(p);
+    //If paddle would go through wall set to wall instead
+    if (paddleYMove + p -> length > screenY){
+        p -> setCoord(p -> x, screenY - p -> length);
         return;
-    if (direction == 1){
-        for (int i = 0; i < paddleOne.width; i++){
-            mvprintw(paddleOne.y, paddleOne.x + i, " ");
+    }
+    else if (paddleYMove < 0){
+        p -> setCoord(p -> x,0);
+        return;
+    }
+    //Otherwise set to location paddle should be
+    p -> setCoord(p->x, paddleYMove);
+}
+void clearPaddle(paddle *p){
+    if (p == &paddleOne){
+        for (int i = 0; i < p -> length; i++){
+            for (int j = 0; j < p -> width; j++){
+                mvprintw(p -> y + i, p -> x + j, " ");
+            }
         }
     }
     else{
-        for (int i = 0; i < paddleOne.width; i++){
-            mvprintw(paddleOne.y+paddleOne.length-1, paddleOne.x + i, " ");
+        for (int i = 0; i < p -> length ; i++){
+            for (int j = 0; j < p -> width; j++){
+                mvprintw(p -> y + i, p -> x - j, " ");
+            }
         }
     }
-    paddleOne.setCoord(0, paddleYMove);
-   
-
+}
+void doCPUMove(){
+    //TODO
+    int move;
+    if (ballOne.vy >= 0){
+        move = 1;
+    }
+    else{
+        move = -1;
+    }
+    int lastMove = -move;
+    if (ballOne.x > screenX/2 && ballOne.lastHitBy == PLAYER_ONE)
+        movePaddles(&paddleTwo, move, &lastMove);
+    else if (ballOne.lastHitBy == PLAYER_TWO && paddleTwo.y != screenY/2-(paddleOne.length/2)){
+        paddleTwo.y > screenY/2-(paddleOne.length/2) ? move = -1 : move = 1;
+        movePaddles(&paddleTwo, move, &lastMove);
+    }
 }
 void incrementBall(){
+    // get future move
     int moveX = ballOne.x + ballOne.vx;
     int moveY = ballOne.y + ballOne.vy;
+    // clear original location of ball
     mvprintw(ballOne.y, ballOne.x, " "); 
+    // if ball hit player wall increment correct score and reset ball 
     if (moveX <= 0){
        scoreChanged = true;
        paddleTwo.score++;
@@ -180,6 +214,7 @@ void incrementBall(){
     else{
         ballOne.x = moveX;
     }
+    // if ball hit side wall reverse direction of travel
     if (moveY <= 0){
         ballOne.y = 0;
         ballOne.vy = -ballOne.vy;
@@ -192,25 +227,48 @@ void incrementBall(){
         ballOne.y = moveY;
     }
      if (checkBallHit()){
-        //TODO speed modification
-        fout << "Ball intercept found: " << endl;
-        fout << "\tPaddle One Y = " << paddleOne.y << endl;
-        fout << "\tPaddle One Y + length = " << paddleOne.y + paddleOne.length << endl;
-        fout << "\tBall One Y = " << ballOne.y << endl;
+        paddle *p;
+        if (ballOne.x > screenX/2){
+            p = &paddleTwo;
+        }
+        else{
+            p = &paddleOne;
+        }
+        double hitPercent = 1.0 * (ballOne.y - p -> y) / p -> length;
+        fout << "ball one y: " << ballOne.y << endl;
+        fout << "p -> y: " << p -> y << endl;
+        fout << "p -> length: " << p -> length;
+        fout << "hit percent:" << hitPercent << endl;
+        if (hitPercent < 0.4){
+            ballOne.vy = (ballOne.vy*1.25);
+        }
+        if (hitPercent > 0.6){
+            ballOne.vy = (ballOne.vy*1.25);
+        }
+        else{
+            ballOne.vy = 1;
+        }
         ballOne.vx = -ballOne.vx;
-        //ballOne.vy = -ballOne.vy;
      }
 }
 bool checkBallHit(){
     bool ballBetweenX;
     bool ballBetweenY;
+    // if ball is on player half
     if (ballOne.x <= screenX/2){
         ballBetweenX = (ballOne.x >= paddleOne.x && ballOne.x <= paddleOne.x + paddleOne.width);
         ballBetweenY = (ballOne.y >= paddleOne.y && ballOne.y <= paddleOne.y + paddleOne.length);
+        if (ballBetweenX && ballBetweenY){
+            ballOne.lastHitBy = PLAYER_ONE;
+        }
     }
+    // if ball is on cpu half
     else if (ballOne.x >= screenX/2){
         ballBetweenX = (ballOne.x <= paddleTwo.x && ballOne.x >= paddleTwo.x - paddleOne.width);
         ballBetweenY = (ballOne.y >= paddleTwo.y && ballOne.y <= paddleTwo.y + paddleOne.length);
+        if (ballBetweenX && ballBetweenY){
+            ballOne.lastHitBy = PLAYER_TWO;
+        }
     }
    
     //bool ballHitSide = (ballOne.x >= paddleOne.x && ballOne.x <= paddleOne.width && (ballOne.y == paddleOne.x || ballOne.y == paddleOne.x + paddleOne.length)) ||
@@ -231,12 +289,15 @@ int getInput(){
 void drawPaddles(){
     for (int i = 0; i < paddleOne.length; i++){
         for (int j = 0; j < paddleOne.width; j++){
-            mvprintw(paddleOne.y + i, j, "|");
+            mvprintw(paddleOne.y + i, paddleOne.x + j, "|");
+        }
+    }
+    for (int i = 0; i < paddleTwo.length; i++){
+        for (int j = 0; j < paddleTwo.width; j++){
             mvprintw(paddleTwo.y + i, paddleTwo.x - j, "|");
         }
     }
 }
-
 void drawBall(){
    mvprintw(ballOne.y, ballOne.x, "o"); 
 }
@@ -284,10 +345,11 @@ void drawScreen(){
         scoreChanged = false;
         clear();
     }
-    drawPaddles();
     drawScore();
+    drawPaddles();
     drawMid();
     drawBall();
     refresh();
     this_thread::sleep_for(chrono::milliseconds(SLOW_DOWN_MS));
+}
 }

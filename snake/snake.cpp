@@ -1,23 +1,7 @@
 //DANIEL VOLCHEK-NCURSES_GAMES_SNAKE
-//Includes
-#include <iostream>
-#include <vector> // Coordinates
-#include <tuple> // Coords for Vector
-#include <stdio.h> // NULL
-#include <ncurses.h> // g++ -l ncurses
-#include <stdlib.h> // RAND 
-#include <time.h> // RAND SEED
-#include <fstream> //Err checking
-#include <string> // File Checking
-#include <unistd.h>// Sleep
-#include "getinput.h" // input header
+#include "includes.h"
 using namespace std;
-
-//Defines
-#define EMPTY 0
-#define WALL 1
-#define SNAKE 2
-#define APPLE 3
+namespace snake{
 //Err checking
 ofstream fout;
 //snake length
@@ -34,19 +18,9 @@ bool QUIT;
 //Apple eaten bool
 bool ateApple;
 bool snakeHitTurn;
-//function decleration
-void initScreen();
-void initBoard(int** board); 
-void doLogic(int** board, int move); 
-void drawScreen(int** board);
-void runGame();
-void pauseScreen(); //TODO
-void getErrFile();
-
-//TODO Add constant direction (continous same key until new key detected
-//TODO Deal with length
-int main(){
-    getErrFile();
+void runGame(){
+    fout.open("snake_errfile");
+    //getErrFile();
     srand(time(NULL)); // Rand Gen
     initScreen(); // start with init screen
     int**board {new int*[screenX]}; // Pointer to pointer array
@@ -88,9 +62,11 @@ int main(){
         c = getInput();
     }
     endwin();
+    QUIT = false;
+    snakeCoords.clear();
+    c = ERR;
     cout << "Score was: " << score << endl;
     cout << "Thanks for playing!" << endl;
-    return 0;
 }
 
 void initScreen(){
@@ -141,11 +117,11 @@ void initBoard(int** board){
         snakeCoords.push_back(make_tuple(snakeHeadCoordX, snakeHeadCoordY+3, snakeHeadCoordX, snakeHeadCoordY+3));
         //board[snakeHeadCoordX][snakeHeadCoordY+3] = SNAKE;         
     }
-    int appleX = rand() % (screenX-3) + 1;
-    int appleY = rand() % (screenY-3) + 1;
-    fout << "set apple at (" << appleX << "," << appleY << ")" << endl;
-    board[appleX][appleY] = APPLE;
-    fout <<"set apple" << endl;
+    for (int i = 0; i < 5; i++){
+        int appleX = rand() % (screenX-3) + 1;
+        int appleY = rand() % (screenY-3) + 1;
+        board[appleX][appleY] = APPLE;
+    }
     fout << "Generate walls" << endl;
     int numWalls = rand() % 30 + 5;
     bool valid;
@@ -162,7 +138,6 @@ void initBoard(int** board){
             board[wallCoordX][wallCoordY] = WALL;
         }while (!valid);
     }
-
 }
 void doLogic(int **board, int move){
     //TODO For loop through elements of snake head
@@ -210,7 +185,7 @@ void doLogic(int **board, int move){
         // Set snake coord at i to x and y of snake part above itself
         // Set last coords to its own previous coords
         snakeCoords.at(i) = make_tuple(newX, newY, get<0>(currentSnakeHead), get<1>(currentSnakeHead));
-        fout << "Snake Part " << i << "moved to (" << newX << "," << newY << ")" << endl;
+        fout << "Snake Part " << i << " moved to (" << newX << "," << newY << ")" << endl;
         board[newX][newY] = SNAKE;
    }
     tuple<int, int, int, int> snakeBack = snakeCoords.back();
@@ -282,8 +257,10 @@ void drawScreen(int** board){
                 printw("0");
                 attroff(COLOR_PAIR(APPLE));
             }
-            else
-                printw("%d", (board[x][y]));
+            else{
+                printw(" "); // potentially switch to drawing blank space at the back of snake
+                }
+                //printw("%d", (board[x][y]));
             refresh();
         }
     }
@@ -306,7 +283,7 @@ void getErrFile(){
     errFileOut << n;
     errFileOut.close();
 }
-
+}
 
 
 

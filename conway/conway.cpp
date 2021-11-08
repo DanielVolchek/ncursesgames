@@ -140,7 +140,6 @@ void setState(int** board){
     int y = 0;
     while(1){
        int c = getch();
-       fout << "c: " << c << endl;
        if (c == KEY_UP){
             if (y-1 >= 0 && y-1 <= screenY-1){
                 y--;
@@ -161,7 +160,6 @@ void setState(int** board){
                 x++;
             }
        }
-       fout << "attempting move to: " << x << "," << y << endl;
        move(y, x);
        if (c == ENTER_KEY){
             fout << "Changing " << x << ", " << y << " from " << board[x][y] << " to " << !(board[x][y]) << endl;
@@ -307,13 +305,20 @@ void enterCommand(int **board){
     printw("/");
     move(screenY, 1);
     string command;
-    char ch;
+    int ch;
     while (1){
         ch = getch();
+        fout << ch << endl;
         if (ch == ENTER_KEY){
             break;
         }
-        command += ch;
+        else if (ch == 263){ // backspace
+            command = command.substr(0, command.length()-1);
+            mvprintw(screenY, command.length()+1, " ");
+            move(screenY, command.length());
+        }
+        else
+            command += ch;
     }
     clear();
     string action;

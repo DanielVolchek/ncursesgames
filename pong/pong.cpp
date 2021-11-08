@@ -43,6 +43,7 @@ void resizeScreen(){
     initBall();
 }
 void runGame(){
+    fout.open("pong_errfile");
     scoreChanged = false;
     int lastMove;
     initScreen();

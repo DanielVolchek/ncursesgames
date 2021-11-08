@@ -14,7 +14,8 @@ class ball{
         const char shape = 'o'; 
         int x;
         int y;
-        int vx;
-        int vy; 
+        double vx;
+        double vy; 
+        int lastHitBy;
 };
 #endif

@@ -62,11 +62,6 @@ void runGame(){
         c = getInput();
     }
     endwin();
-    QUIT = false;
-    snakeCoords.clear();
-    c = ERR;
-    cout << "Score was: " << score << endl;
-    cout << "Thanks for playing!" << endl;
 }
 
 void initScreen(){

@@ -23,6 +23,7 @@ int screenY; // Screen Y length
 //Function decleration
 void runExec(char* exec_file);
 void initScreen();
+void drawTitle();
 void selectionLoop();
 void endScreen();
 void chooseGame(int c);
@@ -30,6 +31,7 @@ void chooseGame(int c);
 int main(){
     fout.open("errfile");
     initScreen();
+    drawTitle();
     selectionLoop();
     return 0;
 }
@@ -52,8 +54,19 @@ void initScreen(){
     getmaxyx(stdscr, screenY, screenX); // Assigns screen size variables
     fout << "Screen X: " << screenX << " Screen Y: " << screenY << endl;
 }
-void endScreen(){
-    endwin();
+void drawTitle(){
+    string s = "_  _ ____++ _  _ ____ ____ ____ ____    ____ ____ _  _ ____ ____ \n|\\ | |      |  | |__/ [__  |___ [__     | __ |__| |\\/| |___ [__  \n| \\| |___   |__| |  \\ ___] |___ ___]    |__] |  | |  | |___ ___] ";
+    int printY = 0;
+    int incX = screenX/4;
+    for (int i = 0; i < s.length(); i++){
+        mvprintw(printY, incX++, "%c", s.at(i));
+        if (s.at(i) == '\n'){
+            printY++;
+            incX = screenX/4;
+        }
+
+    }
+
 }
 void selectionLoop(){
     mvprintw(10, 0, "1");

@@ -159,11 +159,11 @@ void chooseGame(int c){
 void showInfo(){
     clear();
     mvprintw(0, 0, "Pong: ");
-    mvprintw(1, 0, "Play the world famous pong, first video game ever made");
+    mvprintw(1, 0, "Play the world famous pong, first video game ever made (WIP)");
     mvprintw(2, 0, "Conway's Game of Life: ");
-    mvprintw(3, 0, "Play Conway's Game of Life, complete with commands to enhance the excitment of the original Zero Player Game");
+    mvprintw(3, 0, "Play Conway's Game of Life, complete with commands to provide enhanced utilities for the original Zero Player Game (WIP)");
     mvprintw(4, 0, "Snake: ");
-    mvprintw(5, 0, "Play Snake, and eat every apple in sight, but don't touch those red walls!");
+    mvprintw(5, 0, "Play Snake, and eat every apple in sight, but don't touch those red walls!(WIP)");
     mvprintw(6, 0, "Press q to go back to selection");
     refresh();
     int c;

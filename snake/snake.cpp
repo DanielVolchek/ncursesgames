@@ -26,11 +26,13 @@ void runGame(){
     int**board {new int*[screenX]}; // Pointer to pointer array
     initBoard(board);
     ateApple = true; // Set for first pass
-    lastMove = 1; // Set for first pass
+    QUIT = false;
     fout << "Draw Screen" << endl;
     drawScreen(board);
-    QUIT = false;
-    int c = getInput();
+    int c;
+    c = getInput();
+    while (c != KEY_UP && c != KEY_LEFT && c != KEY_RIGHT)
+        c = getInput();
     lastMove = c;
     nodelay(stdscr, true);
     while (!QUIT){
@@ -180,11 +182,11 @@ void doLogic(int **board, int move){
         // Set snake coord at i to x and y of snake part above itself
         // Set last coords to its own previous coords
         snakeCoords.at(i) = make_tuple(newX, newY, get<0>(currentSnakeHead), get<1>(currentSnakeHead));
-        fout << "Snake Part " << i << " moved to (" << newX << "," << newY << ")" << endl;
         board[newX][newY] = SNAKE;
    }
     tuple<int, int, int, int> snakeBack = snakeCoords.back();
     board[get<2>(snakeBack)][get<3>(snakeBack)] = EMPTY;
+    // TODO draw empty spot at end snake part
     int occupiedSpot = board[get<0>(snakeHead)][get<1>(snakeHead)];
     if (occupiedSpot == WALL || occupiedSpot == SNAKE){
         QUIT = true;
@@ -234,6 +236,7 @@ void doLogic(int **board, int move){
     lastMove = move;
 }
 void drawScreen(int** board){
+    //TODO refactor to draw board once then only draw snake and new apples
     for (int x = 0; x < screenX; x++){
         for (int y = 0; y < screenY; y++){
             move(y, x);

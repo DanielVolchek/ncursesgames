@@ -16,23 +16,28 @@
 using namespace std;
 
 #define ENTER 10
-
+#define NUM_GAMES 4
 ofstream fout; // err file
 int screenX; // Screen X length
-int screenY; // Screen Y length
+int screenY; // Screen Y length 
 //Function decleration
 void runExec(char* exec_file);
 void initScreen();
+void drawScreen();
+void showInfo();
 void drawTitle();
-void selectionLoop();
+void drawNames(const char **games, int hightlight);
+void selectionLoop(const char **games);
 void endScreen();
 void chooseGame(int c);
 
 int main(){
+    const char *games[NUM_GAMES] = {"PONG", "GoL", "SNAKE", "INFO"};
     fout.open("errfile");
     initScreen();
     drawTitle();
-    selectionLoop();
+    drawNames(games, 0);
+    selectionLoop(games);
     return 0;
 }
 
@@ -47,6 +52,7 @@ void initScreen(){
     // standard functions
     initscr();
     noecho();
+    curs_set(0);
     cbreak();
     keypad(stdscr, true); // Enables keypad input
     start_color();
@@ -55,25 +61,48 @@ void initScreen(){
     fout << "Screen X: " << screenX << " Screen Y: " << screenY << endl;
 }
 void drawTitle(){
-    string s = "_  _ ____++ _  _ ____ ____ ____ ____    ____ ____ _  _ ____ ____ \n|\\ | |      |  | |__/ [__  |___ [__     | __ |__| |\\/| |___ [__  \n| \\| |___   |__| |  \\ ___] |___ ___]    |__] |  | |  | |___ ___] ";
-    int printY = 0;
-    int incX = screenX/4;
-    for (int i = 0; i < s.length(); i++){
-        mvprintw(printY, incX++, "%c", s.at(i));
-        if (s.at(i) == '\n'){
+    string title = "_  _ ____++ _  _ ____ ____ ____ ____    ____ ____ _  _ ____ ____ \n|\\ | |      |  | |__/ [__  |___ [__     | __ |__| |\\/| |___ [__  \n| \\| |___   |__| |  \\ ___] |___ ___]    |__] |  | |  | |___ ___]\n";
+    string app = string(64, '-');
+    title.append(app);
+    int sLen = title.length();
+    int printY = 1;
+    int incX;
+    int xContainer;
+    for (int i = 0; i < sLen; i++){
+        if (title.at(i) == '\n'){
+            incX = screenX/2 - (i/2);
+            xContainer = incX;
+            break;
+        }
+    }
+    for (int i = 0; i < sLen; i++){
+        mvprintw(printY, incX++, "%c", title.at(i));
+        if (title.at(i) == '\n'){
             printY++;
-            incX = screenX/4;
+            incX = xContainer;
         }
 
     }
 
 }
-void selectionLoop(){
-    mvprintw(10, 0, "1");
-    mvprintw(10, 5, "2");
-    mvprintw(10, 10, "3");
-    refresh();
-    move (10, 0);
+void drawNames(const char **games, int highlight){
+    int increment = NUM_GAMES + 2;
+    int y = screenY/2;
+    int x = screenX/increment;
+    if (highlight == 0)
+        attron(A_REVERSE);
+    mvprintw(y, x, games[0]);
+    attroff(A_REVERSE);
+    for (int i = 1; i < NUM_GAMES; i++){
+        int len = sizeof(games[i-1]) / sizeof(games[i-1][0]);
+        if (i == highlight)
+            attron(A_REVERSE);
+        mvprintw(y, x+len+(screenX/increment), games[i]);
+        attroff(A_REVERSE);
+        x += (screenX/increment)+len;
+    }
+}
+void selectionLoop(const char **games){
     int c;
     int position = 0;
     while (1){
@@ -82,51 +111,67 @@ void selectionLoop(){
         if (c == 'q')
             break;
         if (c == KEY_LEFT){
-            fout << "KEY_LEFT" << endl;
-            fout << "Position: " << position << endl;
-            position -= 5;
+            position--;
             if (position < 0)
                 position = 0;
-            move(10, position);
-            fout << "New Position: " << position << endl;
+            drawNames(games, position);  
         }
         if (c == KEY_RIGHT){
-            fout << "KEY_RIGHT" << endl;
-            fout << "Position: " << position << endl;
-            position += 5;
-            if (position > 10)
-                position = 10;
-            move(10, position);
-            fout << "New position: " << position << endl;
+            position++;
+            if (position > NUM_GAMES-1)
+                position = NUM_GAMES-1;
+            drawNames(games, position);
         }
         if (c == ENTER){
-            fout << "KEY_ENTER " << endl;
-            fout << "Position : " << position << endl;
-            if (position == 0)
-                chooseGame(1);
-            if (position == 5)
-                chooseGame(2);
-            if (position == 10)
-                chooseGame(3);
-            wait(NULL);
+            fout << "enter" << endl;
+            fout << "position = " << position << endl;
+            fout << "pos 3 = " << games[position] << endl;
+            if (games[position] == "INFO"){
+                fout << "show info called" << endl;
+                showInfo();
+                drawTitle();
+                drawNames(games, position);
+            }
+            else{
+                chooseGame(position);
+                wait(NULL);
+            }
         }
         refresh();
     }
     fout << "Exit loop" << endl;
     endwin();
 }
+
 void chooseGame(int c){
     endwin();
     fout << "Choose game " << c << endl;
     string filename;
-    if (c == 1)
+    if (c == 0)
         filename = "./.pong";
+    else if (c == 1)
+        filename = "./.conway";
     else if (c == 2)
         filename = "./.snake";
-    else if (c == 3)
-        filename = "./.conway";
     fout << "run exec " << filename;
     runExec(&filename[0]);
+}
+void showInfo(){
+    clear();
+    mvprintw(0, 0, "Pong: ");
+    mvprintw(1, 0, "Play the world famous pong, first video game ever made");
+    mvprintw(2, 0, "Conway's Game of Life: ");
+    mvprintw(3, 0, "Play Conway's Game of Life, complete with commands to enhance the excitment of the original Zero Player Game");
+    mvprintw(4, 0, "Snake: ");
+    mvprintw(5, 0, "Play Snake, and eat every apple in sight, but don't touch those red walls!");
+    mvprintw(6, 0, "Press q to go back to selection");
+    refresh();
+    int c;
+    while (c != 'q'){
+        c = getch();
+    }
+    clear();
+
 }
 void runExec(char* exec_file){
     pid_t pid = fork();

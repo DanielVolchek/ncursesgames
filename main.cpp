@@ -170,7 +170,7 @@ void showInfo(){
     while (c != 'q'){
         c = getch();
     }
-    clear();
+    clear();    
 
 }
 void runExec(char* exec_file){

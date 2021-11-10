@@ -8,7 +8,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include <fstream>
-#include <string>
+#include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -126,7 +126,7 @@ void selectionLoop(const char **games){
             fout << "enter" << endl;
             fout << "position = " << position << endl;
             fout << "pos 3 = " << games[position] << endl;
-            if (games[position] == "INFO"){
+            if (strncmp(games[position], "INFO", 4) == 0){
                 fout << "show info called" << endl;
                 showInfo();
                 drawTitle();

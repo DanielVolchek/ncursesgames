@@ -199,8 +199,6 @@ void doLogic(int **board, int move){
         score++; 
         board[snakeX][snakeY] = EMPTY;
         tuple<int, int, int, int> endSnake = snakeCoords.back();
-        int newX;
-        int newY;
         // Set location for new snake part
         switch (lastMove){
             case KEY_UP: 

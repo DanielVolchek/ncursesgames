@@ -69,8 +69,8 @@ int main(){
     return 0;
 }
 void runGame(int **board){
-   char c;
-   setState(board);
+   int c;
+   help(board);
    while(!QUIT){
         c = getch();
         if (c == '/'){

@@ -4,15 +4,7 @@
 
 //Code:
 
-//Includes
-#include <iostream>
-#include <ncurses.h>
-#include <fstream>
-#include <string.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include "includes.h"
 using namespace std;
 
 #define ENTER 10
@@ -21,15 +13,6 @@ ofstream fout; // err file
 int screenX; // Screen X length
 int screenY; // Screen Y length 
 //Function decleration
-void runExec(char* exec_file);
-void initScreen();
-void drawScreen();
-void showInfo();
-void drawTitle();
-void drawNames(const char **games, int hightlight);
-void selectionLoop(const char **games);
-void endScreen();
-void chooseGame(int c);
 
 int main(){
     const char *games[NUM_GAMES] = {"PONG", "GoL", "SNAKE", "INFO"};
@@ -37,6 +20,7 @@ int main(){
     initScreen();
     drawTitle();
     drawNames(games, 0);
+    drawTODO();
     selectionLoop(games);
     return 0;
 }
@@ -110,6 +94,11 @@ void selectionLoop(const char **games){
         fout << "c: " << c << endl;
         if (c == 'q')
             break;
+        if (c == KEY_RESIZE){            
+            initScreen();
+            drawTitle();
+            drawNames(games, position);
+        }
         if (c == KEY_LEFT){
             position--;
             if (position < 0)
@@ -183,4 +172,15 @@ void runExec(char* exec_file){
        char* args[] = {exec_file, NULL}; 
        execvp(args[0], args);
     }
+}
+void drawTODO(){
+    int startLine = 25;
+    mvprintw(startLine++, 0, "TODO:");
+    mvprintw(startLine++, 0, "Add commands in GoL (file commands and mem commands)");
+    mvprintw(startLine++, 0, "Fix pong physics");
+    mvprintw(startLine++, 0, "Work through bugs in compiler output");
+    mvprintw(startLine++, 0, "Add minimum size check to menu");
+    mvprintw(startLine++, 0, "Remove todo function");
+    mvprintw(startLine++, 0, "That's it! (for now)");
+    refresh();
 }

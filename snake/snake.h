@@ -16,7 +16,7 @@ namespace snake{
 void initScreen();
 void initBoard(int** board); 
 void doLogic(int** board, int move); 
-void drawScreen(int** board);
+void drawInitScreen(int** board);
 void runGame();
 void pauseScreen(); //TODO
 void getErrFile();

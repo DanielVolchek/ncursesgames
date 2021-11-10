@@ -198,16 +198,15 @@ void doLogic(int **board){
         }
     }
     // Sets boards
-    for (int i = 0; i < liveCoords.size(); i++){
+    for (size_t i = 0; i < liveCoords.size(); i++){
         tuple<int, int> coords = liveCoords.at(i);
         board[get<0>(coords)][get<1>(coords)] = LIVE;
     }
-    for (int i = 0; i < deadCoords.size(); i++){
+    for (size_t i = 0; i < deadCoords.size(); i++){
         tuple<int, int> coords = deadCoords.at(i);
         board[get<0>(coords)][get<1>(coords)] = DEAD;
     }
     // Sleeps thread
-    this_thread::sleep_for(chrono::milliseconds(sleepTime));
 }
 void drawScreen(int** board, bool setting){
     for (int x = 0; x < screenX; x++){
@@ -229,12 +228,6 @@ void drawScreen(int** board, bool setting){
 }
 
 bool checkLiveState(int** board, int x, int y){
-    /*
-       0 0 0 0
-       0 0 0 0
-       0 0 0 0
-       0 0 0 0
-                */
     // Check neighbors
     // If x - 1 < 0 or = to screen or y - 1 < 0 or = to screen
     // Don't check
@@ -323,7 +316,7 @@ void enterCommand(int **board){
     clear();
     string action;
     string flag;
-    for (int i = 0; i < command.length(); i++){
+    for (size_t i = 0; i < command.length(); i++){
         if (command.at(i) == ' '){
             action = command.substr(0, i);
             flag = command.substr(i, command.length() - i);
@@ -454,4 +447,3 @@ void setSpeed(string flag, int **board){
     else
         help(board);
 }
-

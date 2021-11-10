@@ -9,6 +9,7 @@ int snakeLen = 3;
 //Screen Size
 int screenY;
 int screenX;
+const int sleepTime = 100; // Delay snake movement
 //Turn Vector and last turned
 vector<tuple<int,int,int, int>> snakeCoords; // Current Coords X, Y Last Coords X, Y
 int lastMove; // Defined with KEY_UP KEY_DOWN etc...
@@ -28,7 +29,7 @@ void runGame(){
     ateApple = true; // Set for first pass
     QUIT = false;
     fout << "Draw Screen" << endl;
-    drawScreen(board);
+    drawInitScreen(board);
     int c;
     c = getInput();
     while (c != KEY_UP && c != KEY_LEFT && c != KEY_RIGHT)
@@ -59,8 +60,9 @@ void runGame(){
         }
         else{
             doLogic(board, c);
-            drawScreen(board);
+            //drawInitScreen(board);
             }
+        this_thread::sleep_for(chrono::milliseconds(sleepTime));
         c = getInput();
     }
     endwin();
@@ -174,7 +176,7 @@ void doLogic(int **board, int move){
     }
     snakeCoords.at(0) = snakeHead;
     fout << "Passed snake head check" << endl;
-    for (int i = 1; i < snakeCoords.size(); i++){
+    for (size_t i = 1; i < snakeCoords.size(); i++){
         tuple<int, int, int, int> currentSnakeHead = snakeCoords.at(i);
         tuple<int, int, int, int> lastSnakeHead = snakeCoords.at(i-1);
         int newX = get<2>(lastSnakeHead);
@@ -183,10 +185,14 @@ void doLogic(int **board, int move){
         // Set last coords to its own previous coords
         snakeCoords.at(i) = make_tuple(newX, newY, get<0>(currentSnakeHead), get<1>(currentSnakeHead));
         board[newX][newY] = SNAKE;
+        attron(COLOR_PAIR(SNAKE));
+        mvprintw(newY, newX, "0");
+        attroff(COLOR_PAIR(SNAKE));
    }
     tuple<int, int, int, int> snakeBack = snakeCoords.back();
     board[get<2>(snakeBack)][get<3>(snakeBack)] = EMPTY;
-    // TODO draw empty spot at end snake part
+    mvprintw(get<3>(snakeBack), get<2>(snakeBack), " ");
+    refresh();
     int occupiedSpot = board[get<0>(snakeHead)][get<1>(snakeHead)];
     if (occupiedSpot == WALL || occupiedSpot == SNAKE){
         QUIT = true;
@@ -218,10 +224,12 @@ void doLogic(int **board, int move){
         }
         snakeCoords.push_back(endSnake);
         bool valid;
+        int appleX;
+        int appleY;
         do{
             // Set new random move 
-            int appleX = rand() % (screenX-3) + 1;
-            int appleY = rand() % (screenY-3) + 1;
+            appleX = rand() % (screenX-3) + 1;
+            appleY = rand() % (screenY-3) + 1;
             // Check random location not on wall
             valid = board[appleX][appleY] != WALL;
             if (valid){
@@ -229,12 +237,15 @@ void doLogic(int **board, int move){
             }
         }
         while(!valid);
-        
+        attron(COLOR_PAIR(APPLE));
+        mvprintw(appleY, appleX, "0");
+        attroff(COLOR_PAIR(APPLE));
     }
+    refresh();
     lastMove = move;
 }
-void drawScreen(int** board){
-    //TODO refactor to draw board once then only draw snake and new apples
+void drawInitScreen(int** board){
+    // Draw initial screen on game start
     for (int x = 0; x < screenX; x++){
         for (int y = 0; y < screenY; y++){
             move(y, x);
@@ -254,9 +265,8 @@ void drawScreen(int** board){
                 attroff(COLOR_PAIR(APPLE));
             }
             else{
-                printw(" "); // potentially switch to drawing blank space at the back of snake
+                printw(" ");
                 }
-                //printw("%d", (board[x][y]));
             refresh();
         }
     }
@@ -280,6 +290,3 @@ void getErrFile(){
     errFileOut.close();
 }
 }
-
-
-

@@ -10,6 +10,8 @@
 #include <fstream> //Err checking
 #include <string> // File Checking
 #include <unistd.h>// Sleep
+#include <thread> // Slow down program
+#include <chrono> // Slow down program
 #include "snake.h"
 #include "getinput.h"
 #endif
